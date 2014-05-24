@@ -1,8 +1,8 @@
-// Copyright (c) 2013, the polymer_elements.dart project authors.  Please see 
-// the AUTHORS file for details. All rights reserved. Use of this source code is 
+// Copyright (c) 2013, the polymer_elements.dart project authors.  Please see
+// the AUTHORS file for details. All rights reserved. Use of this source code is
 // governed by a BSD-style license that can be found in the LICENSE file.
-// This work is a port of the polymer-elements from the Polymer project, 
-// http://www.polymer-project.org/. 
+// This work is a port of the polymer-elements from the Polymer project,
+// http://www.polymer-project.org/.
 
 library polymer_elements.polymer_media_query;
 
@@ -39,7 +39,7 @@ class PolymerMediaQuery extends PolymerElement {
    * The CSS media query to evaulate
    */
   @published String mquery = ''; // renamed from query to mquery to avoid conflicts with super.query() method
-  
+
   static const EventStreamProvider<CustomEvent> _polymerMediachange =
       const EventStreamProvider<CustomEvent>('polymer-mediachange');
 
@@ -48,10 +48,10 @@ class PolymerMediaQuery extends PolymerElement {
    */
   Stream<CustomEvent> get onPolymerMediachange =>
       PolymerMediaQuery._polymerMediachange.forTarget(this);
-  
+
   var _mqHandler;
   var _mq;
-  
+
   @override
   void enteredView() {
     this._mqHandler = queryHandler;
@@ -73,18 +73,19 @@ class PolymerMediaQuery extends PolymerElement {
     }
 
     if(context['matchMedia'] != null) {
+      print("DEBUG: ${this.mquery}");
       this._mq = context.callMethod('matchMedia', ['(${this.mquery})']);
       this._mq.callMethod('addListener', [_mqHandler]);
       queryHandler(this._mq);
     }
     // TODO not supported in Dart yet (#84)
-    // Listener hast to be as MediaQueryListListener but this is and abstract 
+    // Listener hast to be as MediaQueryListListener but this is and abstract
     // class and therefor it's not possible to create a listner
     // this._mq = window.matchMedia(q);
     // this._mq.addListener(queryHandler);
     // this.queryHandler(this._mq);
   }
-  
+
   void queryHandler(mq) {
     this.queryMatches = mq['matches'];
     fire('polymer-mediachange', detail: mq);
