@@ -50,20 +50,21 @@ class PolymerMediaQuery extends PolymerElement {
       PolymerMediaQuery._polymerMediachange.forTarget(this);
 
   var _mqHandler;
-  var _mq;
+  @observable MediaQueryList mq;
 
   @override
   void enteredView() {
-    this._mqHandler = queryHandler;
+    this._mqHandler = mqChanged;
     super.enteredView();
     mqueryChanged(null);
   }
 
   void mqueryChanged(oldValue) {
-    if (this._mq != null) {
-      if(context['matchMedia'] != null) {
-        _mq.callMethod('removeListener', [_mqHandler]);
-      }
+    if (this.mq != null) {
+      //if(context['matchMedia'] != null) {
+        //_mq.callMethod('removeListener', [_mqHandler]);
+        //_mq.removeListener(_mqHandler);
+      //}
       // TODO not supported in Dart yet (#84)
       //this._mq.removeListener(this._mqHandler);
     }
@@ -73,10 +74,7 @@ class PolymerMediaQuery extends PolymerElement {
     }
 
     if(context['matchMedia'] != null) {
-      print("DEBUG: ${this.mquery}");
-      this._mq = context.callMethod('matchMedia', ['(${this.mquery})']);
-      this._mq.callMethod('addListener', [_mqHandler]);
-      queryHandler(this._mq);
+      this.mq = window.matchMedia('(${this.mquery})');
     }
     // TODO not supported in Dart yet (#84)
     // Listener hast to be as MediaQueryListListener but this is and abstract
@@ -86,8 +84,8 @@ class PolymerMediaQuery extends PolymerElement {
     // this.queryHandler(this._mq);
   }
 
-  void queryHandler(mq) {
-    this.queryMatches = mq['matches'];
+  mqChanged(oldValue) {
+    this.queryMatches = mq.matches;
     fire('polymer-mediachange', detail: mq);
   }
 }
